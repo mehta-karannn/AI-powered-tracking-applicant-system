@@ -46,16 +46,28 @@ const Upload = () => {
 
         setStatusText('Analyzing...');
 
-        const feedback = await ai.feedback(
-            uploadedFile.path,
-            prepareInstructions({ jobTitle, jobDescription ,AIResponseFormat })
-        )
-        if (!feedback) return setStatusText('Error: Failed to analyze resume');
+let feedback; // Define feedback outside the try block
+try {
+    feedback = await ai.feedback(
+        uploadedFile.path,
+        prepareInstructions({ jobTitle, jobDescription, AIResponseFormat })
+    );
 
-        const feedbackText = typeof feedback.message.content === 'string'
-            ? feedback.message.content
-            : feedback.message.content[0].text;
+    if (!feedback) {
+        // This catches if the API just returns null without throwing an error
+        console.error('AI feedback returned null or undefined.');
+        return setStatusText('Error: Failed to analyze resume (null response)');
+    }
 
+} catch (err) {
+    // This catches API errors (e.g., 4xx, 5xx, network issues)
+    console.error('Detailed AI analysis error:', err); // <-- THIS IS THE IMPORTANT LINE
+    return setStatusText(`Error: ${err || 'AI analysis failed'}`);
+}
+
+const feedbackText = typeof feedback.message.content === 'string'
+    ? feedback.message.content
+    : feedback.message.content[0].text;
         data.feedback = JSON.parse(feedbackText);
         await kv.set(`resume:${uuid}`, JSON.stringify(data));
         setStatusText('Analysis complete, redirecting...');
