@@ -37,7 +37,7 @@ const Resume = () => {
             const resumeUrl = URL.createObjectURL(pdfBlob);
             setResumeUrl(resumeUrl);
 
-            const imageBlob = await fs.read(data.imagePath);
+            const imageBlob  = await fs.read(data.imagePath);
             if(!imageBlob) return;
             const imageUrl = URL.createObjectURL(imageBlob);
             setImageUrl(imageUrl);
@@ -49,7 +49,7 @@ const Resume = () => {
         loadResume();
     }, [id]);
 
-    
+
     return (
         <main className="!pt-0">
             <nav className="resume-nav">
