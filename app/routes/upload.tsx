@@ -5,7 +5,7 @@ import {usePuterStore} from "~/lib/puter";
 import {useNavigate} from "react-router";
 import {convertPdfToImage} from "~/lib/pdf2img";
 import {generateUUID} from "~/lib/utils";
-import {prepareInstructions} from "~/constants";
+import {AIResponseFormat,prepareInstructions} from "~/constants";
 
 const Upload = () => {
     const { auth, isLoading, fs, ai, kv } = usePuterStore();
@@ -48,7 +48,7 @@ const Upload = () => {
 
         const feedback = await ai.feedback(
             uploadedFile.path,
-            prepareInstructions({ jobTitle, jobDescription, AIResponseFormat: 'json' })
+            prepareInstructions({ jobTitle, jobDescription ,AIResponseFormat })
         )
         if (!feedback) return setStatusText('Error: Failed to analyze resume');
 
@@ -72,6 +72,7 @@ const Upload = () => {
         const companyName = formData.get('company-name') as string;
         const jobTitle = formData.get('job-title') as string;
         const jobDescription = formData.get('job-description') as string;
+        // console.log({ companyName, jobTitle, jobDescription, file });
 
         if(!file) return;
 
