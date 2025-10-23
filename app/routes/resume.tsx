@@ -49,6 +49,7 @@ const Resume = () => {
         loadResume();
     }, [id]);
 
+    
     return (
         <main className="!pt-0">
             <nav className="resume-nav">
